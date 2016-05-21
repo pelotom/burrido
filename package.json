@@ -1,6 +1,6 @@
 {
   "name": "burrido",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Monads and do-notation for JavaScript",
   "scripts": {
     "build": "browserify -s burrido src/burrido.js -o burrido.js -t [ babelify ]",
