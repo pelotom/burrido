@@ -1,7 +1,8 @@
 {
   "name": "burrido",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Monads and do-notation for JavaScript",
+  "main": "burrido.js",
   "scripts": {
     "build": "browserify -s burrido src/burrido.js -o burrido.js -t [ babelify ]",
     "test": "mocha \"src/**/*.spec.js\" --compilers js:babel-register --reporter min",
