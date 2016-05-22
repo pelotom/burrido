@@ -4,12 +4,13 @@
   "description": "Monadic do-notation for JavaScript",
   "main": "burrido.js",
   "scripts": {
-    "release-major": "xyz --increment major",
-    "release-minor": "xyz --increment minor",
-    "release-patch": "xyz --increment patch",
     "build": "browserify -s burrido src/burrido.js -o burrido.js -t [ babelify ]",
     "test": "mocha \"src/**/*.spec.js\" --compilers js:babel-register --reporter min",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "release": "xyz",
+    "release:patch": "xyz --increment patch",
+    "release:minor": "xyz --increment minor",
+    "release:major": "xyz --increment major"
   },
   "author": "Thomas Crockett",
   "license": "MIT",
