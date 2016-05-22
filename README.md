@@ -25,7 +25,7 @@ ArrayMonad.Do(function*() {
 }) // -> [3,4,6,8]
 ```
 
-The above should look fairly self-explanatory to a Haskell programmer: we are declaring a `Monad` instance for arrays, which requires us to define two functions: `pure` and `bind`. Then we obtain a special function `Do` which is a *do*-notation tailored to that particular monad. We pass a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) to `Do`, within which we gain access to the `yield` keyword, which in this context can be thought of as a way to "unwrap" monadic values and release their effects.
+The above should look fairly self-explanatory to a Haskell programmer: we are declaring a `Monad` instance for arrays, which requires us to define two functions: `pure` and `bind`. Then we obtain a special function `Do` which is a *do*-notation tailored to that particular monad. We pass a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) to `Do`, within which we gain access to the `yield` keyword, allowing us to "unwrap" monadic values and release their effects.
 
 In fact this is a bit more versatile than Haskell's *do*-notation in a couple of interesting ways:
 1. Haskell's `Monad` is a [type class](https://www.haskell.org/tutorial/classes.html), which means that there can only be one way in which a given type constructor is considered a monad within a given scope. But some type constructors can be considered monadic in more than one way (e.g. `Either`). By contrast, here you can create as many `Monad` definitions as you want for a particular type (constructor), and each just has its own special `Do` function.
