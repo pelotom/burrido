@@ -33,17 +33,21 @@ In fact this is a bit more versatile than Haskell's *do*-notation in a couple of
   ```javascript
   const foo = yield bar
   ```
+  
   is comparable to
   ```haskell
   foo <- bar
   ```
+  
   in *do*-notation, one can also create compound `yield` expressions which have no direct analogue in Haskell. For example,
   ```javascript
   const foo = yield (yield bar)
   ```
+  
   would have to be written as
   ```haskell
   foo' <- bar
   foo <- foo'
   ```
+  
   in *do*-notation. In the context of `Do` blocks, `yield` serves a similar purpose to the `!` operator in both [Idris](http://www.idris-lang.org/) and the [Effectful](https://github.com/pelotom/effectful) library for Scala.
