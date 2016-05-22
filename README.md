@@ -92,3 +92,5 @@ doLatest(block).subscribe(console.log)
 ```
 
 This should make sense if you think about the semantics of each of these different methods of "flattening" nested `Observable`s.
+
+RxJS has a function [`spawn`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/spawn.md) which allows you to use this kind of syntax with `Observable`s, but it only works properly with single-valued streams (essentially Promises), whereas burrido allows manipulating streams of multiple values, using multiple different semantics.
