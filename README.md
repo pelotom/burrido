@@ -1,4 +1,4 @@
-# burrido [![Build Status](https://travis-ci.org/pelotom/immutagen.svg?branch=master)](https://travis-ci.org/pelotom/immutagen)
+# burrido [![Build Status](https://travis-ci.org/pelotom/burrido.svg?branch=master)](https://travis-ci.org/pelotom/burrido)
 
 An experiment in bringing Haskell's [programmable semicolon](https://en.wikibooks.org/wiki/Haskell/do_notation) to JavaScript, using [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator).
 
