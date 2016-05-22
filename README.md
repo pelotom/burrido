@@ -1,6 +1,6 @@
 # burrido
 
-An experiment in bringing the Haskell's [programmable semicolon](https://en.wikibooks.org/wiki/Haskell/do_notation) to JavaScript, using [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator).
+An experiment in bringing Haskell's [programmable semicolon](https://en.wikibooks.org/wiki/Haskell/do_notation) to JavaScript, using [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator).
 
 ### Installation
 
