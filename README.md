@@ -58,14 +58,20 @@ RxJS `Observable`s form a monad in several different ways:
 
 ```javascript
 const { just: pure } = Observable
+
 const { Do: doConcat } = Monad({
-  pure, bind: (x, f) => x.concatMap(f)
+  pure,
+  bind: (x, f) => x.concatMap(f)
 })
+
 const { Do: doMerge } = Monad({
-  pure, bind: (x, f) => x.flatMap(f)
+  pure,
+  bind: (x, f) => x.flatMap(f)
 })
+
 const { Do: doLatest } = Monad({
-  pure, bind: (x, f) => x.flatMapLatest(f)
+  pure,
+  bind: (x, f) => x.flatMapLatest(f)
 })
 ```
 
@@ -91,6 +97,21 @@ doMerge(block).subscribe(console.log)
 doLatest(block).subscribe(console.log)
 ```
 
-This should make sense if you think about the semantics of each of these different methods of "flattening" nested `Observable`s.
+This should make sense if you think about the semantics of each of these different methods of "flattening" nested `Observable`s. Each `do*` flavor applies its own semantics to the provided block, but they all return `Observable`s, so we can freely combine them:
+
+```javascript
+doConcat(function*() {
+  const x = yield doConcat(function*() {
+          //...
+        }),
+        y = yield doMerge(function*() {
+          //...
+        }),
+        z = yield doLatest(function*() {
+          //...
+        })
+  return { x, y, z }
+})
+```
 
 RxJS has a function [`spawn`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/spawn.md) which allows you to use this kind of syntax with `Observable`s, but it only works properly with single-valued streams (essentially Promises), whereas burrido allows manipulating streams of multiple values, using multiple different semantics.
