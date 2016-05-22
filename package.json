@@ -1,6 +1,6 @@
 {
   "name": "burrido",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Monadic do-notation for JavaScript",
   "main": "burrido.js",
   "scripts": {
