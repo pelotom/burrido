@@ -33,21 +33,62 @@ In fact this is a bit more versatile than Haskell's *do*-notation in a couple of
   ```javascript
   const foo = yield bar
   ```
-  
+
   is comparable to
   ```haskell
   foo <- bar
   ```
-  
+
   in *do*-notation, one can also create compound `yield` expressions which have no direct analogue in Haskell. For example,
   ```javascript
   const foo = yield (yield bar)
   ```
-  
+
   would have to be written as
   ```haskell
   foo' <- bar
   foo <- foo'
   ```
-  
+
   in *do*-notation. In the context of `Do` blocks, `yield` serves a similar purpose to the `!` operator in both [Idris](http://www.idris-lang.org/) and the [Effectful](https://github.com/pelotom/effectful) library for Scala.
+
+### An example using [RxJS](https://github.com/Reactive-Extensions/RxJS)
+
+RxJS `Observable`s form a monad in several different ways:
+
+```javascript
+const { just: pure } = Observable
+const { Do: doConcat } = Monad({
+  pure, bind: (x, f) => x.concatMap(f)
+})
+const { Do: doMerge } = Monad({
+  pure, bind: (x, f) => x.flatMap(f)
+})
+const { Do: doLatest } = Monad({
+  pure, bind: (x, f) => x.flatMapLatest(f)
+})
+```
+
+It's insructive to see what happens when you apply these different *do*-notations to the same generator block:
+
+```javascript
+const { from } = Observable
+
+const block = function*() {
+  // for each x in [1,2,3]...
+  const x = yield from([1,2,3])
+  // wait 1 second
+  yield pure({}).delay(1000)
+  // then return the value
+  return x
+}
+
+// Prints 1, 2, and 3 separated by 1 second intervals
+doConcat(block).subscribe(console.log)
+// Waits 1 second and then prints 1, 2, 3 all at once
+doMerge(block).subscribe(console.log)
+// Waits 1 second and then prints 3
+doLatest(block).subscribe(console.log)
+```
+
+This should make sense if you think about the semantics of each of these different methods of "flattening" nested `Observable`s.
