@@ -6,14 +6,14 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-// A simple immutable generator simulator that replays history in order to
+// A simple immutable generator emulator that replays history in order to
 // "clone" JavaScript's mutable generators
 
-exports.default = function (genFactory) {
+exports.default = function (genFun) {
   var nextFor = function nextFor(history) {
     return function (input) {
       var newHist = history.concat([input]);
-      var gen = genFactory(newHist[0]);
+      var gen = genFun(newHist[0]);
       var _newHist$map$history$ = newHist.map(function (x) {
         return gen.next(x);
       })[history.length];
