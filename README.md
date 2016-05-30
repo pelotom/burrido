@@ -19,10 +19,10 @@ const ArrayMonad = Monad({
 })
 
 ArrayMonad.Do(function*() {
-  const x = yield [1,2]
-  const y = yield [3,4]
+  const x = yield () => [1,2]
+  const y = yield () => [3,4]
   return x * y
-}) // -> [3,4,6,8]
+})() // -> [3,4,6,8]
 ```
 
 The above should look fairly self-explanatory to a Haskell programmer: we are declaring a `Monad` instance for arrays, which requires us to define two functions: `pure` and `bind`. Then we obtain a special function `Do` which is a *do*-notation tailored to that particular monad. We pass a [generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) to `Do`, within which we gain access to the `yield` keyword, allowing us to "unwrap" monadic values and release their effects.
@@ -31,7 +31,7 @@ In fact this is a bit more versatile than Haskell's *do*-notation in a couple of
   1. Haskell's `Monad` is a [type class](https://www.haskell.org/tutorial/classes.html), which means that there can only be one way in which a given type constructor is considered a monad within a given scope. But some type constructors can be considered monadic in more than one way (e.g. `Either`). By contrast, here you can create as many `Monad` definitions as you want for a particular type (constructor), and each just has its own special `Do` function.
   1. While
   ```javascript
-  const foo = yield bar
+  const foo = yield () => bar
   ```
 
   is comparable to
@@ -41,7 +41,7 @@ In fact this is a bit more versatile than Haskell's *do*-notation in a couple of
 
   in *do*-notation, one can also create compound `yield` expressions which have no direct analogue in Haskell. For example,
   ```javascript
-  const foo = yield (yield bar)
+  const foo = yield () => (yield () => bar)
   ```
 
   would have to be written as
@@ -51,6 +51,35 @@ In fact this is a bit more versatile than Haskell's *do*-notation in a couple of
   ```
 
   in *do*-notation. In the context of `Do` blocks, `yield` serves a similar purpose to the `!` operator in both [Idris](http://www.idris-lang.org/) and the [Effectful](https://github.com/pelotom/effectful) library for Scala.
+
+### Lazy monadic values
+
+You may have wondered why we have to use
+
+```javascript
+yield () => foo
+```
+
+instead of simply
+
+```javascript
+yield foo
+```
+
+and why the result of `Do(...)` is a function which has to be invoked to actually retrieve a result. This is due to [an unfortunate limitation of JavaScript's generator objects](http://sitr.us/2014/08/02/javascript-generators-and-functional-reactive-programming.html), namely that they are mutable and cannot be cloned.
+
+To get around this, we use an [emulated immutable generator](https://github.com/pelotom/immutagen), which accomplishes "cloning" by replaying the history of generated values up to the current point in the generator function. But for this technique to work requires that the generator function be side-effect free, or else we risk repeating side-effects. Furthermore we want to avoid redoing any unnecessary computation, even if it's pure, when replaying the history. To this end we require that `yield` is applied to a *lazy* value, i.e. a function of no arguments which returns a value of the monadic type. And the result of a `Do(...)` invocation is itself a lazy value which can be applied to actually carry out the full computation. Note that since the result of a `Do`-block is lazy, it can be `yield`ed directly:
+
+```javascript
+const lazyResult = Do(function*() {
+  // Correct:
+  const y = yield Do(...)      
+  // Incorrect; the result of Do(...) is already lazy!
+  yield () => Do(...)
+})
+// Actually carry out the above computation:
+lazyResult()
+```
 
 ### An example using [RxJS](https://github.com/Reactive-Extensions/RxJS)
 
@@ -82,19 +111,19 @@ const { from } = Observable
 
 const block = function*() {
   // for each x in [1,2,3]...
-  const x = yield from([1,2,3])
+  const x = yield () => from([1,2,3])
   // wait 1 second
-  yield pure({}).delay(1000)
+  yield () => pure({}).delay(1000)
   // then return the value
   return x
 }
 
 // Prints 1, 2, and 3 separated by 1 second intervals
-doConcat(block).subscribe(console.log)
+doConcat(block)().subscribe(console.log)
 // Waits 1 second and then prints 1, 2, 3 all at once
-doMerge(block).subscribe(console.log)
+doMerge(block)().subscribe(console.log)
 // Waits 1 second and then prints 3
-doLatest(block).subscribe(console.log)
+doLatest(block)().subscribe(console.log)
 ```
 
 This should make sense if you think about the semantics of each of these different methods of "flattening" nested `Observable`s. Each `do*` flavor applies its own semantics to the provided block, but they all return `Observable`s, so we can freely combine them:
@@ -111,7 +140,7 @@ doConcat(function*() {
           //...
         })
   return { x, y, z }
-})
+})()
 ```
 
 RxJS has a function [`spawn`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/spawn.md) which allows you to use this kind of syntax with `Observable`s, but it only works properly with single-valued streams (essentially Promises), whereas burrido allows manipulating streams of multiple values, using multiple different semantics.
