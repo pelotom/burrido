@@ -75,7 +75,7 @@ const { Do: doLatest } = Monad({
 })
 ```
 
-It's insructive to see what happens when you apply these different *do*-notations to the same generator block:
+It's instructive to see what happens when you apply these different *do*-notations to the same generator block:
 
 ```javascript
 const { from } = Observable
