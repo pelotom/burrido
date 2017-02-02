@@ -115,3 +115,11 @@ doConcat(function*() {
 ```
 
 RxJS has a function [`spawn`](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/spawn.md) which allows you to use this kind of syntax with `Observable`s, but it only works properly with single-valued streams (essentially Promises), whereas burrido allows manipulating streams of multiple values, using multiple different semantics.
+
+## Caveats
+
+Because JavaScript's generators are neither immutable nor cloneable, we are forced to simulate immutable generators using a library called [immutagen](https://github.com/pelotom/immutagen). There are two unavoidable downsides to this approach:
+- `pure` and `bind` must be side-effect free. This can always be achieved in practice by making the monadic type lazy (wrapping it in a closure). See #1.
+- The simulation is inefficient, requiring *O(n^2)* steps to execute the *nth* yield within a single generator. See #2.
+
+With natively immutable generators (or the native ability to clone mutable generators), both of these limitations would go away.
