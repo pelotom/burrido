@@ -2,13 +2,13 @@
 
 An experiment in bringing Haskell's [programmable semicolon](https://en.wikibooks.org/wiki/Haskell/do_notation) to JavaScript, using [generators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator).
 
-### Installation
+## Installation
 
 ```
 npm install --save burrido
 ```
 
-### Usage
+## Usage
 
 ```javascript
 import Monad from 'burrido'
@@ -52,7 +52,7 @@ In fact this is a bit more versatile than Haskell's *do*-notation in a couple of
 
   in *do*-notation. In the context of `Do` blocks, `yield` serves a similar purpose to the `!` operator in both [Idris](http://www.idris-lang.org/) and the [Effectful](https://github.com/pelotom/effectful) library for Scala.
 
-### An example using [RxJS](https://github.com/Reactive-Extensions/RxJS)
+## An example using [RxJS](https://github.com/Reactive-Extensions/RxJS)
 
 RxJS `Observable`s form a monad in several different ways:
 
