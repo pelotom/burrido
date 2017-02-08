@@ -14,7 +14,7 @@ npm install --save burrido
 import Monad from 'burrido'
 
 const ArrayMonad = Monad({
-  pure: (x) => [x],
+  pure: x => [x],
   bind: (xs, f) => xs.map(f).reduce((a, b) => a.concat(b), [])
 })
 
